@@ -2,13 +2,15 @@ package ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Scanner;
 public class Main {
 	private static Scanner sc=new Scanner(System.in);
-	private static int[] priceBook;
+	private static Integer[] priceBook;
 	public static void main (String[] args) throws IOException {
 
 		int numBooks=0;
+		Long start, time;
 		int peterMoney=0;
 		boolean b=true;
 		while(b) {
@@ -22,15 +24,28 @@ public class Main {
 				System.out.println("Please enter a number between 2 and 10000");
 			}
 		}
-		priceBook= new int[numBooks];
+		priceBook= new Integer[numBooks];
 		enterPrices(numBooks);
-		sortPrices();
-		printArray();
+		Integer[] copyPriceBook=Arrays.copyOf(priceBook, priceBook.length);
+
 		System.out.println("How much money receives peter?");
 		peterMoney=sc.nextInt();
 		sc.nextLine();
+
+		start=System.currentTimeMillis();
+		System.out.println("Start Binary search: ");
+		sortPrices();
 		int nearIndex=binarySearch(peterMoney);
 		System.out.println(exactSum(nearIndex,peterMoney));
+		time=(System.currentTimeMillis()-start);
+		System.out.println("Finish Binary search: "+time);
+
+		priceBook=copyPriceBook;
+		start=System.currentTimeMillis();
+		System.out.println("Start lineal search: ");
+		System.out.println(linealSearch(peterMoney));
+		time=(System.currentTimeMillis()-start);
+		System.out.println("Finish lineal search: "+time);
 	}
 
 	public static void enterPrices(int size) throws IOException {
@@ -92,42 +107,48 @@ public class Main {
 		}
 		return m;
 	}
-	
+
 	public static String exactSum(int minBook,int  totalMoney) {
-		int i=0;
-		int j;
-		
+
 		int exactSum;
 		int subtraction;
 		int minValue=9999;
 		String message="";
 		if(priceBook[minBook]>=totalMoney) {
-			j=minBook-1;
+			minBook-=1;
 		}
-		else {
-			j=minBook;
-		}
-		
-		while((i<j)){
-			exactSum=priceBook[i]+priceBook[j];
-			subtraction=priceBook[j]-priceBook[i];
-			if(exactSum==totalMoney) {
-				if(subtraction<minValue) {
-					minValue=subtraction;
-					message="Peter should buy books whose prices are "+priceBook[i]+" and " +priceBook[j];
+		for(int i=0;i<minBook-1;i++) {
+			for(int j=i+1;j<=minBook;j++) {
+				exactSum=priceBook[i]+priceBook[j];
+				subtraction=priceBook[j]-priceBook[i];
+				if(exactSum==totalMoney) {
+					if(subtraction<minValue) {
+						minValue=subtraction;
+						message="Peter should buy books whose prices are "+priceBook[i]+" and " +priceBook[j];
+					}
 				}
 			}
-			j--;
-			i++;
 		}
 		return message;
 	}
 
-	public static void printArray() {
-		for(int i=0;i<priceBook.length;i++) {
-			System.out.print(priceBook[i]+" ");
+	public static String linealSearch(int  totalMoney) {
+		int exactSum, subtraction;
+		int minValue=999999;
+		String message="";
+		for(int i=0;i<priceBook.length-2;i++) {
+			for(int j=i+1;j<=priceBook.length-1;j++) {
+				exactSum=priceBook[i]+priceBook[j];
+				subtraction=priceBook[j]-priceBook[i];
+				if(exactSum==totalMoney) {
+					if(subtraction<minValue) {
+						minValue=subtraction;
+						message="Peter should buy books whose prices are "+priceBook[i]+" and " +priceBook[j];
+					}
+				}
+			}
 		}
-		System.out.println("\n");
+		return message;
 	}
 
 	/*
