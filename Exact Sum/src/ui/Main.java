@@ -25,9 +25,16 @@ public class Main {
 			}
 		}
 		priceBook= new Integer[numBooks];
-		enterPrices(numBooks);
+		int option =selectOption();
+		if(option==1) {
+			enterPrices(numBooks);
+		}
+		else if(option==2){
+			enterRandomPrices();
+		}
+		printArray();
 		Integer[] copyPriceBook=Arrays.copyOf(priceBook, priceBook.length);
-
+		
 		System.out.println("How much money receives peter?");
 		peterMoney=sc.nextInt();
 		sc.nextLine();
@@ -35,6 +42,7 @@ public class Main {
 		start=System.currentTimeMillis();
 		System.out.println("Start Binary search: ");
 		sortPrices();
+		
 		int nearIndex=binarySearch(peterMoney);
 		System.out.println(exactSum(nearIndex,peterMoney));
 		time=(System.currentTimeMillis()-start);
@@ -71,6 +79,12 @@ public class Main {
 			}
 		}
 	}
+	
+	public static void enterRandomPrices() {
+		for(int i=0; i<priceBook.length;i++) {
+			priceBook[i]=(int) Math.floor(Math.random()*200+1);
+		}
+	}
 
 	public static void sortPrices() {
 		int aux, j;
@@ -85,6 +99,13 @@ public class Main {
 			priceBook[j+1]=aux;
 		}
 	}
+	
+	public static void printArray() { 
+		for(int i=0;i<priceBook.length;i++) { 
+			System.out.print(priceBook[i]+" "); 
+		} 
+		System.out.println("\n"); 
+	} 
 
 	public static int binarySearch(int element) {
 		int i, j;
@@ -151,8 +172,8 @@ public class Main {
 		return message;
 	}
 
-	/*
-	public static int selectOption(int books) {
+	
+	public static int selectOption() {
 		int option=0;
 		boolean b=true;
 		System.out.println("Please select an option:  ");
@@ -161,10 +182,10 @@ public class Main {
 		while(b) {
 			option=sc.nextInt();
 			if(option==1) {
-				b=false;
+				return option;
 			}
 			else if(option==2){
-
+				return option;
 			}
 			else {
 				System.out.println("That option is not available");
@@ -172,5 +193,5 @@ public class Main {
 		}
 		sc.nextLine();
 		return option;
-	}*/
+	}
 }
